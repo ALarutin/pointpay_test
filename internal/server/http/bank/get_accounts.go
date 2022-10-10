@@ -73,9 +73,9 @@ func (h *handler) GetAccounts(c *gin.Context) {
 			return
 		}
 
-		if _, err = c.Writer.Write(accountJSON); err != nil {
+		if _, err = c.Writer.Write(accountJSON); _err != nil {
 			logger.L().
-				With(append(logger.GetFields(ctx), stacktrace.Key, stacktrace.Get(err))).
+				With(append(logger.GetFields(ctx), stacktrace.Key, stacktrace.Get(_err))).
 				Error(err.Error())
 
 			c.JSON(http.StatusInternalServerError, gin.H{"error": ErrorFromServer.Error()})
