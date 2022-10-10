@@ -1,0 +1,178 @@
+openapi: 3.0.3
+info:
+  version: 1.0.0
+  title: Bank API
+
+tags:
+  - name: Account
+
+paths:
+  /account:
+    post:
+      tags:
+        - Account
+      summary: Create account
+      responses:
+        200:
+          $ref: "#/components/responses/Account"
+        500:
+          $ref: "#/components/responses/Error"
+  /account/{accountID}/address:
+    post:
+      tags:
+        - Account
+      summary: Generate address
+      parameters:
+        - $ref: "#/components/parameters/path.accountID"
+      responses:
+        200:
+          $ref: "#/components/responses/Account"
+        400:
+          $ref: "#/components/responses/Error"
+        404:
+          $ref: "#/components/responses/Error"
+        500:
+          $ref: "#/components/responses/Error"
+  /account/{accountID}/deposit:
+    patch:
+      tags:
+        - Account
+      summary: Increasing the balance
+      parameters:
+        - $ref: "#/components/parameters/path.accountID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: "#/components/schemas/Balance"
+      responses:
+        200:
+          $ref: "#/components/responses/Account"
+        400:
+          $ref: "#/components/responses/Error"
+        404:
+          $ref: "#/components/responses/Error"
+        500:
+          $ref: "#/components/responses/Error"
+  /account/{accountID}/withdrawal:
+    patch:
+      tags:
+        - Account
+      summary: Balance reduction
+      parameters:
+        - $ref: "#/components/parameters/path.accountID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: "#/components/schemas/Balance"
+      responses:
+        200:
+          $ref: "#/components/responses/Account"
+        400:
+          $ref: "#/components/responses/Error"
+        404:
+          $ref: "#/components/responses/Error"
+        500:
+          $ref: "#/components/responses/Error"
+  /accounts:
+    patch:
+      tags:
+        - Account
+      summary: Get all accounts
+      responses:
+        200:
+          $ref: "#/components/responses/Accounts"
+        500:
+          $ref: "#/components/responses/Error"
+
+
+components:
+  parameters:
+    path.accountID:
+      name: accountID
+      in: path
+      description: Account identifier
+      required: true
+      schema:
+        type: string
+        format: uuid
+
+  responses:
+    Account:
+      description: "Account object"
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  id:
+                    type: string
+                    nullable: false
+                    format: uuid
+                  walletID:
+                    type: integer
+                    nullable: true
+                  balance:
+                    type: string
+                    nullable: false
+                    format: "10.01"
+                required:
+                  - id
+                  - balance
+
+    Accounts:
+      description: "Accounts object"
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: array
+                items:
+                  allOf:
+                    - type: object
+                      properties:
+                        id:
+                          type: string
+                          nullable: false
+                          format: uuid
+                        walletID:
+                          type: integer
+                          nullable: true
+                        balance:
+                          type: string
+                          nullable: false
+                          format: "10.01"
+                      required:
+                        - id
+                        - balance
+
+    Error:
+      description: Validation error
+      content:
+        application/json:
+          schema:
+            allOf:
+              - type: object
+                properties:
+                  errors:
+                    type: string
+                    nullable: false
+                required:
+                  - errors
+
+  schemas:
+    Balance:
+      type: object
+      properties:
+        balance:
+          type: string
+          description: "balance"
+          example: "10.01"
+      required:
+        - balance

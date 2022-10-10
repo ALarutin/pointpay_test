@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package account;
+
+option go_package = "./pb";
+
+import "google/protobuf/Empty.proto";
+
+service Accounts  {
+  rpc CreateAccount (google.protobuf.Empty) returns (Account) {}
+  rpc GetAccounts (google.protobuf.Empty) returns (stream Account) {}
+  rpc GenerateAddress (GenerateAddressRequest) returns (Account) {}
+  rpc Deposit (ChangeBalanceRequest) returns (Account) {}
+  rpc Withdrawal (ChangeBalanceRequest) returns (Account) {}
+}
+
+message Account {
+  string ID = 1;
+  uint64 wallet_id = 2;
+  string balance = 3;
+}
+
+message GenerateAddressRequest {
+  string accountID = 1;
+}
+
+message ChangeBalanceRequest {
+  string  ID = 1;
+  string  changes = 2;
+}
+
